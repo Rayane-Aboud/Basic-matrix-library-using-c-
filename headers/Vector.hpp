@@ -1,9 +1,7 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
-
 #include <vector>
-#include "Matrix.hpp"
-
+class Matrix;
 class Vector
 {
 private:
@@ -34,11 +32,16 @@ public:
     /*multiplication with a col vector*/
     double scalarProduct(const Vector&);
     Vector operator*(double scalar);
+    Vector operator+(const Vector&);
+    Vector operator-(const Vector&);
+    Vector pseudoMultiplication(const Vector&);
     bool operator==(const Vector& vector);
     void thisScalarMultiplication(const double scalar);
+    double euclidianNorm();
     //convertion
     Matrix convertToColMatrix();
     Matrix convertToRowMatrix();
+    
 
 };
 

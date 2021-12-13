@@ -18,7 +18,10 @@ public:
     Matrix(int rows,int columns,std::vector<std::vector<double>>& matrix);
     /*3*/
     Matrix(const Matrix& Matrix_);
-
+    /*4*/
+    Matrix(int row,int col,int size,const Matrix& Matrix_);
+    /*5*/
+    Matrix(int beginRow,int beginCol,int endRow,int endCol,int size,const Matrix& Matrix_);
     /*Destructor*/
     ~Matrix();
 
@@ -45,9 +48,9 @@ public:
     
     /*Boolean Methodes*/
     /*1*/
-    bool isRowNull(int row);
+    bool isNullRow(int row);
     /*2*/
-    bool isColumnNull(int col);
+    bool isNullColumn(int col);
     /*3*/
     bool isNullMatrix();
     /*4*/
@@ -62,7 +65,11 @@ public:
     bool isVector();
     /*9*/
     bool isDouble();
-    
+    /*10*/
+    bool isTriangularSup();
+    /*11*/
+    bool isTriangularInf(); 
+
     /*Swappers*/
     /*1*/
     void swapRows(int row1,int row2);
@@ -102,11 +109,30 @@ public:
     Matrix Choleskey();
     /*5*/
     Matrix getInverse();
-    /*Vector transformation*/
+    /*6*/
+    std::vector<Matrix>QR();
+    /*Extracting elements*/
+    /*1*/
     Vector vectorTransform();
+    /*2*/
+    Vector extractRowVector(int row);
+    /*3*/
+    Matrix extractRowMatrix(int row);
+    /*4*/
+    Vector extractColumnVector(int column);
+    /*5*/
+    Matrix extractColumnMatrix(int column);
     /*Static methods*/
     static Matrix HilbertMatrix(int n);
+    static Matrix cannonicRowVect(int range,int dimension);
+    static Matrix cannonicColVect(int range,int dimension);
+    static Matrix getId(int dimension);
+    void placeMatrix(int i,int j,const Matrix& matrix);
     /*Solving Equations System*/
+
+
+    double getEuclidianNorm();
+    Matrix extractMatrix(int rowBegin,int colBegin,int rowEnd,int colEnd);
 };
 
 
