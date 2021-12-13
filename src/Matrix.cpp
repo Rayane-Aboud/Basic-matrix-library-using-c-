@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include "../headers/MathUtils.hpp"
 #include "../headers/Matrix.hpp"
-
 /*Constructors*/
 
 /*1*/
@@ -52,7 +52,27 @@ Matrix::Matrix(const Matrix& Matrix_){
         this->matrix.push_back(vector);
     }
 }
+/*4*/
+Matrix::Matrix(int row,int col,int size,const Matrix& Matrix_){
+    if(row<0||row>=Matrix_.rows||col<0||col>Matrix_.columns)
+        exit(0);
+    if(size<0||row+size>Matrix_.rows||col+size>Matrix_.columns)
+        exit(0);
+    this->rows=size;
+    this->columns=size;
+    std::vector<double>vector;
+    for(int i=0;i<size;i++){
+        for(int j=0;j<size;j++){
+            vector.push_back(Matrix_.matrix[row+i][col+j]);
+        }
+        this->matrix.push_back(vector);
+    }
+}
 
+/*5*/
+Matrix::Matrix(int beginRow,int beginCol,int endRow,int endCol,int size,const Matrix& Matrix_){
+
+}
 /*Destructor*/
 Matrix::~Matrix()
 {
@@ -64,14 +84,17 @@ Matrix::~Matrix()
 int Matrix::getNumRows(){
     return this->rows;
 }
+
 /*2*/
 int Matrix::getNumCols(){
     return this->columns;
 }
+
 /*3*/
 double Matrix::getElement(int row, int column){
     return this->matrix[row][column];
 }
+
 /*4*/
 bool Matrix::setElement(int row, int column,double valueElement){
     if(!(row<this->rows && column<this->columns))
@@ -79,12 +102,14 @@ bool Matrix::setElement(int row, int column,double valueElement){
     this->matrix[row][column]=valueElement;
     return true;
 }
+
+
 /*Display */
 void Matrix::printMatrix(){
         
     for(int i=0;i<this->rows;i++){
         for (int j=0;j<this->columns;j++){
-            std::cout<<this->matrix[i][j]<<std::endl;
+            std::cout<<this->matrix[i][j]<<"   ";
         }
         std::cout<<std::endl;
     }
@@ -115,9 +140,9 @@ void Matrix::fill(double value){
 //void Matrix::randomize(){}
 
 
-/*Boolean Methods*/
+/*Boolean Methodes*/
 /*1*/
-bool Matrix::isRowNull(int row){
+bool Matrix::isNullRow(int row){
     if (this->rows<row)
         return false;
     for(int j=0;j<this->columns;j++){
@@ -126,7 +151,7 @@ bool Matrix::isRowNull(int row){
     return true;
 }
 /*2*/
-bool Matrix::isColumnNull(int col){
+bool Matrix::isNullColumn(int col){
     if (this->columns<col)
         return false;
     for(int i=0;i<this->rows;i++){
@@ -184,6 +209,29 @@ bool Matrix::isVector(){
 /*9*/
 bool Matrix::isDouble(){
     return(this->rows==1 && this->columns==1);
+}
+/*10*/
+bool Matrix::isTriangularSup(){
+    for(int i=0;i<this->rows;i++){
+        for(int j=0;j<this->columns;j++)
+        {
+            if(i>j && this->matrix[i][j]!=0)
+                return false;
+        }
+        
+    }
+    return true;
+}
+/*11*/
+bool Matrix::isTriangularInf(){
+    for(int i=0;i<this->rows;i++){
+        for(int j=0;j<this->columns;j++)
+        {
+            if(j>i && this->matrix[i][j]!=0)
+                return false;
+        }
+    }
+    return true;
 }
 /*Swappers*/
 /*1*/
@@ -331,7 +379,7 @@ Matrix Matrix::getTranspose(){
 std::vector<Matrix> Matrix::PLU(){
     std::vector<Matrix> result;
     if(this->rows!=this->columns){
-        std::cout<<"not yet buddy";
+        std::cout<<"column and rows not equal";
         exit(0);
     }
     int pivot;
@@ -340,7 +388,7 @@ std::vector<Matrix> Matrix::PLU(){
     Matrix P(this->rows,this->columns);P.id();
     for(int i=0;i<this->rows;i++){
         
-        //regler le probleme du pivot
+        //changing the pivot if it is null
         pivot=i;
         
         if(this->matrix[pivot][pivot]==0){
@@ -356,15 +404,14 @@ std::vector<Matrix> Matrix::PLU(){
             L.swapColumns(pivot,pivotrow);
             U.swapRows(pivot,pivotrow);
         }
-        //effectuer les operations
+        
         for(int j=pivot+1;j<this->rows;j++){
             L.matrix[j][pivot]=U.matrix[j][pivot]/U.matrix[pivot][pivot];
-            //printf("%f \n",L.matrix[j][pivot]);
             for(int k=0;k<this->columns;k++){
                 U.matrix[j][k]+=-1*L.matrix[j][pivot]*U.matrix[pivot][k];
                 
             }
-            if(U.isRowNull(j)){
+            if(U.isNullRow(j)){
                 std::cout<<"matrice non diagonalisable ! ligne:"<<j<<" est null";
                 //return results that makes the determinant equals to 0
                 P.fill(0);
@@ -405,6 +452,7 @@ double Matrix::determinant(){
     }
     return determinant*sign;
 }
+
 /*4*/
 Matrix Matrix::Choleskey(){
     std::vector<Matrix>matrixList;
@@ -438,8 +486,6 @@ Matrix Matrix::getInverse(){
     }
     Matrix thisMatrix(*this);
     Matrix inverseMatrix(this->rows,this->columns);inverseMatrix.id();
-    //double regulator=this->getMinMatrix();
-    //thisMatrix.thisScalarMultiplication(1/regulator);
     int pivot;
     for(int i=0;i<this->rows;i++){
         pivot=i;
@@ -463,9 +509,8 @@ Matrix Matrix::getInverse(){
                 thisMatrix.matrix[j][k]+=-1*coeff*thisMatrix.matrix[pivot][k];
                 inverseMatrix.matrix[j][k]+=-1*coeff*inverseMatrix.matrix[pivot][k];
             }
-            if(thisMatrix.isRowNull(j)){
+            if(thisMatrix.isNullRow(j)){
                 std::cout<<"matrice non diagonalisable ! ligne:"<<j<<" est null";
-                //return results that makes the determinant equals to 0
                 return thisMatrix;
             }
         }
@@ -483,14 +528,12 @@ Matrix Matrix::getInverse(){
             }
         }
     }
-   /* if(thisMatrix.isIdMatrix()==false){
-        std::cout<<"something wrong I can feel it";
-        exit(0);
-    }*/
-    //inverseMatrix.thisScalarMultiplication(regulator);
+   
     return inverseMatrix;
 }
-/*Vector transformation*/
+
+/*Extracting elements*/
+/*1*/
 Vector Matrix::vectorTransform(){
     if(!this->isVector())
     {
@@ -502,15 +545,60 @@ Vector Matrix::vectorTransform(){
         for(int i=0;i<this->columns;i++){
             v.vector[i]=this->matrix[0][i];
         }
+        return v;
     }
-    if(this->isColumnVector()){
+    else{
         Vector v(this->rows);
         for(int i=0;i<this->rows;i++){
             v.vector[i]=this->matrix[i][0];
         }
+        return v;
     }
     
-
+}
+/*2*/
+Vector Matrix::extractRowVector(int row){
+    if(row>=this->rows){
+        std::cout<<"couldn't extract the row"<<std::endl;
+        exit(0);
+    }
+    Vector v(this->columns);
+    for(int j=0;j<v.length;j++)
+        v.vector[j]=this->matrix[row][j];
+    return v;
+}
+/*3*/
+Matrix Matrix::extractRowMatrix(int row){
+    if(row>=this->rows){
+        std::cout<<"couldn't extract the row"<<std::endl;
+        exit(0);
+    }
+    Matrix retMat(1,this->columns);
+    for(int j=0;j<retMat.columns;j++)
+        retMat.matrix[0][j]=this->matrix[row][j];
+    return retMat;
+}
+/*4*/
+Vector Matrix::extractColumnVector(int column){
+    if(column>=this->columns){
+        std::cout<<"couldn't extract the column"<<std::endl;
+        exit(0);
+    }
+    Vector v(this->rows);
+    for(int i=0;i<v.length;i++)
+        v.vector[i]=this->matrix[i][column];
+    return v;
+}
+/*5*/
+Matrix Matrix::extractColumnMatrix(int column){
+    if(column>=this->columns){
+        std::cout<<"couldn't extract the column"<<std::endl;
+        exit(0);
+    }
+    Matrix retMat(this->rows,1);
+    for(int i=0;i<retMat.rows;i++)
+        retMat.matrix[i][0]=this->matrix[i][column];
+    return retMat;
 }
 /*Static function*/
 Matrix Matrix::HilbertMatrix(int n){
@@ -524,39 +612,127 @@ Matrix Matrix::HilbertMatrix(int n){
 }
 
 
-
-
-/*Matrix Matrix::multiply(const Matrix& Matrix_){
-    Matrix returnMatrix(this->rows,Matrix_.columns);
-    if (this->columns!=Matrix_.rows)
-    {
-        std::cout<<"cannot multiply the two matrix:Math Error";
-        exit(0);
+//---------------the QR project-----------------
+double Matrix::getEuclidianNorm(){
+    double euclNorm=0;
+    if(this->isColumnVector()){
+        for(int i=0;i<this->rows;i++){
+            euclNorm+=this->matrix[i][0]*this->matrix[i][0];
+        }
+        
     }
-    
-    double retElement;
-    for(int i=0;i<this->rows;i++){
-        for(int j=0;j<Matrix_.columns;j++){
-            retElement=0;
-            for(int k=0;k<this->columns;k++){
-                retElement+=this->matrix[i][k]*Matrix_.matrix[k][j];
-            }
-            returnMatrix.setElement(i,j,retElement);
+    else if(this->isRowVector()){
+        for(int j=0;j<this->columns;j++){
+            euclNorm+=this->matrix[0][j];
         }
     }
-    return returnMatrix;
-}
-*/
-
-
-/*
-Matrix Matrix::getInverse(){
-    if (this->rows!=this->columns)
-    {
-        std::cout<<"cannot get the inverse! it is not a square matrix";
+    else{
         exit(0);
     }
-    Matrix thisMatrix(*this);
-    Matrix inverseMatrix(this->rows,this->columns);
+    euclNorm=sqrt(euclNorm);
+    return euclNorm;
 }
-*/
+Matrix Matrix::extractMatrix(int rowBegin,int colBegin,int rowEnd,int colEnd){
+   /* if(rowBegin>rowEnd||colEnd<colBegin){
+        std::cout<<"hello1";
+        exit(0);
+    }
+        
+    if(rowBegin<0||rowBegin>this->rows||rowEnd<0||rowEnd>this->rows)
+    {
+        std::cout<<"hello2";
+        exit(0);
+    }*/
+    
+    Matrix extractedMatrix(rowEnd-rowBegin+1,colEnd-colBegin+1);
+    for(int i=rowBegin;i<=rowEnd;i++){
+        for(int j=colBegin;j<=colEnd;j++){
+            extractedMatrix.matrix[i-rowBegin][j-colBegin]=this->matrix[i][j];
+        }
+    }
+    return extractedMatrix;
+}
+
+Matrix Matrix::cannonicRowVect(int index,int dimension){
+    if(index>=dimension||index<0)
+        exit(0);
+    Matrix v =Matrix(1,dimension);
+    v.matrix[0][index]=1;
+    return v;
+}
+
+Matrix Matrix::cannonicColVect(int index,int dimension){
+    if(index>=dimension||index<0)
+        exit(0);
+    Matrix v =Matrix(dimension,1);
+    v.matrix[index][0]=1;
+    return v;
+}
+Matrix Matrix::getId(int dimension){
+    Matrix retMatrix(dimension,dimension);
+    for(int i=0;i<dimension;i++){
+        retMatrix.matrix[i][i]=1;
+    }
+    return retMatrix;
+}
+
+void Matrix::placeMatrix(int rowBegin,int colBegin,const Matrix& matrix){
+    for(int i=0;i<matrix.rows;i++){
+        for(int j=0;j<matrix.columns;j++){
+            this->matrix[i+rowBegin][j+colBegin]=matrix.matrix[i][j];
+        }
+    }
+}
+
+std::vector<Matrix> Matrix::QR(){
+    if(this->rows!=this->columns)
+        exit(0);
+    
+    int size=this->rows;
+    
+    std::vector<Matrix>Hvector;
+    Matrix Q=getId(size);
+    Matrix A(*this);
+    for(int i=0;i<size;i++){
+        Matrix Hsize=getId(size);
+        Matrix a=A.extractMatrix(i,i,size-1,i);
+        std::cout<<"vecteur extrait:\n";
+        a.printMatrix();
+        Matrix e=cannonicColVect(0,size-i);
+        
+        e.thisScalarMultiplication(MathUtils::sign(a.matrix[0][0])*a.getEuclidianNorm());
+        
+        std::cout<<"e after ta3dil:\n";
+        e.printMatrix();
+
+        std::cout<<"sum:\n";
+        Matrix u=(a+e);
+        u.printMatrix();
+        u.thisScalarMultiplication(1/u.getEuclidianNorm());
+
+
+        Matrix tmpMatrix=u*u.getTranspose();
+        tmpMatrix.thisScalarMultiplication(-2);
+        Matrix H=Matrix::getId(size-i)+tmpMatrix;
+        
+        Hsize.placeMatrix(i,i,H);
+        
+        //A.printMatrix();
+        
+        H.printMatrix();
+        Hsize.printMatrix();
+        A.printMatrix();
+        
+        A=Hsize*A;
+        
+        Hvector.push_back(Hsize);
+    }
+    
+   for(int i=0;i<size;i++){
+        Q=Q*Hvector[i];
+    }
+    std::vector<Matrix> retVector;
+    retVector.push_back(Q);
+    retVector.push_back(A);
+    return retVector;
+}

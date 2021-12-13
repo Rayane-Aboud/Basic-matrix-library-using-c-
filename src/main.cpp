@@ -6,42 +6,34 @@ using namespace std;
   
 int main()
 {   
-    std::vector<Matrix>L;
-    std::vector<std::vector<double>>matrix;
-    for(int i=0;i<3;i++){
-        std::vector<double> vector;
-        for(int j=0;j<3;j++){
-            vector.push_back(0);
-        }
-        matrix.push_back(vector);
-    }
-    matrix[0][0]=0;
-    matrix[0][1]=1;
-    matrix[0][2]=1;
-    matrix[1][0]=1;
-    matrix[1][1]=5;
-    matrix[1][2]=5;
-    matrix[2][0]=1;
-    matrix[2][1]=5;
-    matrix[2][2]=14;
-
-    Matrix A(3,3,matrix);
-    //A.printMatrix();
-    /*L=A.PLU();
-    L[0].printMatrix();
-    L[1].printMatrix();
-    L[2].printMatrix();
-    
-    Matrix C(3,3);
-    C=A.Choleskey();
-    C.printMatrix();
-    (C*C.getTranspose()).printMatrix();*/
-    //Matrix B=Matrix::HilbertMatrix(100);
-    //B.printMatrix();
-    (Matrix::HilbertMatrix(3)*Matrix::HilbertMatrix(3).getInverse()).printMatrix();/*non stable à partir */
-    //std::cout<<A.determinant();
-    //std::cout<<A.determinant();
+   std::vector<std::vector<double>>matrix;
+   std::vector<double> v;
+   v.push_back(2);
+   v.push_back(-2);
+   v.push_back(18);
+   matrix.push_back(v);
+   v[0]=2;
+   v[1]=1;
+   v[2]=0;
+   matrix.push_back(v);
+   v[0]=1;
+   v[1]=2;
+   v[2]=0;
+   matrix.push_back(v);
+   Matrix A(3,3,matrix);
+   std::vector<Matrix> listMat;
+   listMat=A.QR();
+   listMat[0].printMatrix();
+   listMat[1].printMatrix();
 }
+/*
+Matrix A(3,3);
+    Matrix B(2,3);
+    A=B;
+    A.printMatrix();
+    Matrix C=A*B;
+    C=B*A;
+    */
 /*// Initializing the vector of vectors
     vector<vector<int> > vec;
   

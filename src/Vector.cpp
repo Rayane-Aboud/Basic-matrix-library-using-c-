@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <math.h>
 #include "../headers/Vector.hpp"
-
+#include "../headers/Matrix.hpp"
 Vector::Vector(int length){
     this->length=length;
     for(int i=0;i<this->length;i++){
@@ -114,15 +115,7 @@ Vector Vector::operator*(double scalar){
     return retVect;
 }
 
-bool Vector::operator==(const Vector& vector){
-    if(this->length!=vector.length)
-        return false;
-    for(int i=0;i<this->length;i++){
-        if(this->vector[i]!=vector.vector[i])
-            return false;
-    }
-    return true;
-}
+
 
 void Vector::thisScalarMultiplication(const double scalar){
     for(int i=0;i<this->length;i++){
