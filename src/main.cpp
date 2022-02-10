@@ -8,23 +8,30 @@ int main()
 {   
    std::vector<std::vector<double>>matrix;
    std::vector<double> v;
-   v.push_back(2);
-   v.push_back(-2);
-   v.push_back(18);
+   std::vector<double> y;
+   std::vector<double> x0;
+   
+   v.push_back(1);v.push_back(2);v.push_back(2);
    matrix.push_back(v);
-   v[0]=2;
-   v[1]=1;
-   v[2]=0;
+   v[0]=2;v[1]=1;v[2]=2;
    matrix.push_back(v);
-   v[0]=1;
-   v[1]=2;
-   v[2]=0;
+   v[0]=2;v[1]=2;v[2]=1;
    matrix.push_back(v);
-   Matrix A(3,3,matrix);
-   std::vector<Matrix> listMat;
-   listMat=A.QR();
-   listMat[0].printMatrix();
-   listMat[1].printMatrix();
+   Matrix A(matrix);
+   std::vector<Matrix>list= A.getDiagonalEquivalent_Gauss();
+   list[0].printMatrix();
+   /*y.push_back(3);y.push_back(19);y.push_back(31);
+   Vector ySol(y);
+   
+   A.solve_GS(ySol,x,300,0).printVector();*/
+   /*x0.push_back(1);x0.push_back(0);x0.push_back(0);
+   Vector x(x0);
+   Vector q(x.getLength());
+   double ev=A.power_iteration(x,&q,3,0.01);
+   std::cout<<ev<<std::endl;
+   q.printVector();
+   std::cout<<q.getEuclidianNorm()<<std::endl;*/
+
 }
 /*
 Matrix A(3,3);

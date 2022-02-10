@@ -9,3 +9,8 @@ int MathUtils::sign(double d)
     else 
         return 1;
 }
+
+double MathUtils::abs(double d){
+    if(d<0) return -1*d;
+    else return d;
+}

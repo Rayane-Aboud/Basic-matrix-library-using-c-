@@ -54,11 +54,11 @@ bool Vector::setElement(int index, double value){
 //show
 
 void Vector::printVector(){
-    std::cout<<"[ ";
+    std::cout<<"[ \n";
     for(int i=0;i<this->length;i++){
-        std::cout<<this->vector[i]<<" ";
+        std::cout<<this->vector[i]<<std::endl;
     }
-    std::cout<<" ]";
+    std::cout<<" ]\n";
 }
 
 //fill
@@ -114,7 +114,20 @@ Vector Vector::operator*(double scalar){
         retVect.vector[i]=this->vector[i]*scalar;
     return retVect;
 }
+//Vector operator+(const Vector&);
+Vector Vector::operator+(const Vector& vector){
+    Vector retVect(*this);
+    for(int i=0;i<this->length;i++)
+        retVect.vector[i]=this->vector[i]+vector.vector[i];
+    return retVect;
+}
 
+Vector Vector::operator-(const Vector& vector){
+    Vector retVect(*this);
+    for(int i=0;i<this->length;i++)
+        retVect.vector[i]=this->vector[i]-vector.vector[i];
+    return retVect;
+}
 
 
 void Vector::thisScalarMultiplication(const double scalar){
@@ -126,7 +139,7 @@ void Vector::thisScalarMultiplication(const double scalar){
 Matrix Vector::convertToColMatrix(){
     Matrix retMatrix(this->length,1);
     for(int i=0;i<this->length;i++){
-        retMatrix.matrix[i][1]=this->vector[i];
+        retMatrix.matrix[i][0]=this->vector[i];
     }
     return retMatrix;
 }
@@ -138,3 +151,15 @@ Matrix Vector::convertToRowMatrix(){
     }
     return retMatrix;
 }
+
+
+//added lately
+
+double Vector::getEuclidianNorm(){
+    double sum=0;
+    for(int i=0;i<this->length;i++){
+        sum=sum+this->vector[i]*this->vector[i];
+    }
+    return (double)sqrt(sum);
+}
+
