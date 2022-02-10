@@ -36,8 +36,9 @@ public:
     Vector operator-(const Vector&);
     Vector pseudoMultiplication(const Vector&);
     bool operator==(const Vector& vector);
+    
     void thisScalarMultiplication(const double scalar);
-    double euclidianNorm();
+    double getEuclidianNorm();
     //convertion
     Matrix convertToColMatrix();
     Matrix convertToRowMatrix();

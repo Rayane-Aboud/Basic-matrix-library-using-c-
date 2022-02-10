@@ -15,13 +15,15 @@ public:
     /*1*/
     Matrix(int rows,int columns);//reserve causes memory leak
     /*2*/
-    Matrix(int rows,int columns,std::vector<std::vector<double>>& matrix);
+    Matrix(std::vector<std::vector<double>>& matrix);
     /*3*/
     Matrix(const Matrix& Matrix_);
     /*4*/
     Matrix(int row,int col,int size,const Matrix& Matrix_);
     /*5*/
     Matrix(int beginRow,int beginCol,int endRow,int endCol,int size,const Matrix& Matrix_);
+    /*6*/
+    Matrix(int size);
     /*Destructor*/
     ~Matrix();
 
@@ -97,23 +99,26 @@ public:
     double getMinMatrix();
     /*5*/
     double getMaxMatrix();
-
+    /*6*/
+    void thisMatrixMultiplicationLeft(const Matrix& Matrix);
+    /*7*/
+    void thisMatrixMultiplicationRight(const Matrix& Matrix);
     /*Numerical methods*/
     /*1*/
     Matrix getTranspose();
     /*2*/
-    std::vector<Matrix> PLU();
+    std::vector<Matrix> plu();
     /*3*/
     double determinant();
     /*4*/
     Matrix Choleskey();
     /*5*/
-    Matrix getInverse();
+    Matrix getInverse();//ordre
     /*6*/
-    std::vector<Matrix>QR();
+    std::vector<Matrix>qr();
     /*Extracting elements*/
     /*1*/
-    Vector vectorTransform();
+    Vector convertVector();
     /*2*/
     Vector extractRowVector(int row);
     /*3*/
@@ -124,15 +129,20 @@ public:
     Matrix extractColumnMatrix(int column);
     /*Static methods*/
     static Matrix HilbertMatrix(int n);
-    static Matrix cannonicRowVect(int range,int dimension);
-    static Matrix cannonicColVect(int range,int dimension);
+    static Matrix cannonicRowMat(int range,int dimension);
+    static Matrix cannonicColMat(int range,int dimension);
     static Matrix getId(int dimension);
     void placeMatrix(int i,int j,const Matrix& matrix);
     /*Solving Equations System*/
-
-
+    bool isSquare();//added lately
+    bool isDiagonallyDominant();//added lately
+    bool isColinearWith(const Matrix& matrix);
     double getEuclidianNorm();
     Matrix extractMatrix(int rowBegin,int colBegin,int rowEnd,int colEnd);
+    Vector solve(Vector y);
+    Vector solve_GS(Vector y,Vector x0,int it_max,float error);
+    double power_iteration(Vector x0,Vector* eigenVector,int it_max,float error);
+    std::vector< Matrix> getDiagonalEquivalent_Gauss();
 };
 
 
