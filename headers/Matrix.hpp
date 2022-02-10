@@ -143,6 +143,8 @@ public:
     Vector solve_GS(Vector y,Vector x0,int it_max,float error);
     double power_iteration(Vector x0,Vector* eigenVector,int it_max,float error);
     std::vector< Matrix> getDiagonalEquivalent_Gauss();
+    Matrix getDiagonalEquivalent_LR(int);
+    Matrix getDiagonalEquivalent_QR(int);
 };
 
 
