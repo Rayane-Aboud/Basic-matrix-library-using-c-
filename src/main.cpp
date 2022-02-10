@@ -18,8 +18,9 @@ int main()
    v[0]=2;v[1]=2;v[2]=1;
    matrix.push_back(v);
    Matrix A(matrix);
-   std::vector<Matrix>list= A.getDiagonalEquivalent_Gauss();
-   list[0].printMatrix();
+   A.getDiagonalEquivalent_QR(10).printMatrix();
+   /*std::vector<Matrix>list= A.getDiagonalEquivalent_Gauss();
+   list[0].printMatrix();*/
    /*y.push_back(3);y.push_back(19);y.push_back(31);
    Vector ySol(y);
    

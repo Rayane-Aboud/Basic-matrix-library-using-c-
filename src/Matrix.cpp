@@ -247,8 +247,10 @@ bool Matrix::isTriangularSup(){
     for(int i=0;i<this->rows;i++){
         for(int j=0;j<this->columns;j++)
         {
-            if(i>j && this->matrix[i][j]!=0)
+            if(i>j && (this->matrix[i][j]!=0.0||this->matrix[i][j]!=-0.0)){
                 return false;
+            }
+                
         }
         
     }
@@ -1080,4 +1082,30 @@ std::vector< Matrix> Matrix::getDiagonalEquivalent_Gauss(){
     list.push_back(retMat);
     list.push_back(eigenVectors);
     return list;
+}
+
+Matrix Matrix::getDiagonalEquivalent_LR(int nb_it_max){
+    Matrix aMatrix(*this);
+    int nb_it=0;
+    while(nb_it<nb_it_max){
+        std::vector<Matrix>plu;
+        plu=aMatrix.plu();
+        if(!plu[0].isIdMatrix()) exit(0);
+        aMatrix=plu[2]*plu[1];
+        aMatrix.printMatrix();
+        nb_it++;
+    }
+    return aMatrix;
+}
+
+Matrix Matrix::getDiagonalEquivalent_QR(int nb_it_max){
+    Matrix aMatrix(*this);
+    int nb_it=0;
+    while(nb_it<nb_it_max){
+        std::vector<Matrix>qr;
+        qr=aMatrix.qr();
+        aMatrix=qr[1]*qr[0];
+        nb_it++;
+    }
+    return aMatrix;
 }
